@@ -1,0 +1,2715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoopFund — Member Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1a3a2a;
+    --sage: #2d5a3d;
+    --mint: #4a8c6a;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --cream: #f5f0e8;
+    --warm-white: #faf8f4;
+    --text: #1a2318;
+    --text-muted: #5a6b56;
+    --border: #d4cfc4;
+    --success: #2d7a4f;
+    --warning: #c97d2a;
+    --danger: #a83232;
+    --info: #2a5a8c;
+    --card-bg: #ffffff;
+    --sidebar-width: 260px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ═══════════════════════════════════════
+     AUTH SCREENS
+  ═══════════════════════════════════════ */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    background: var(--forest);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #auth-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 20% 50%, rgba(74,140,106,0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(201,168,76,0.2) 0%, transparent 50%);
+  }
+
+  .auth-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 60px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .auth-brand {
+    margin-bottom: 60px;
+  }
+
+  .auth-brand .logo-mark {
+    width: 56px; height: 56px;
+    background: var(--gold);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--forest);
+    margin-bottom: 16px;
+    transform: rotate(-3deg);
+  }
+
+  .auth-brand h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  .auth-brand p {
+    color: rgba(245,240,232,0.6);
+    font-size: 14px;
+    margin-top: 6px;
+    font-weight: 300;
+  }
+
+  .auth-tagline {
+    margin-bottom: 40px;
+  }
+
+  .auth-tagline h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--cream);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .auth-tagline h2 em {
+    font-style: normal;
+    color: var(--gold);
+  }
+
+  .auth-tagline p {
+    color: rgba(245,240,232,0.7);
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .auth-stats {
+    display: flex;
+    gap: 32px;
+    margin-top: 40px;
+  }
+
+  .auth-stat {
+    text-align: center;
+  }
+
+  .auth-stat .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 24px;
+    color: var(--gold);
+    font-weight: 500;
+    display: block;
+  }
+
+  .auth-stat .lbl {
+    color: rgba(245,240,232,0.6);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+  }
+
+  .auth-right {
+    width: 420px;
+    background: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    box-shadow: -8px 0 32px rgba(0,0,0,0.1);
+  }
+
+  .auth-form-box {
+    width: 100%;
+  }
+
+  .auth-form-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .auth-form-box .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .auth-tabs {
+    display: flex;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .auth-tab {
+    flex: 1;
+    padding: 12px 0;
+    text-align: center;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .auth-tab.active {
+    color: var(--mint);
+    border-bottom: 2px solid var(--mint);
+  }
+
+  .form-group {
+    margin-bottom: 16px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--warm-white);
+    transition: border-color 0.2s;
+  }
+
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none;
+    border-color: var(--mint);
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--forest);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary:hover { background: var(--sage); transform: translateY(-1px); }
+
+  .auth-switch {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .auth-switch a {
+    color: var(--mint);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .auth-switch a:hover {
+    text-decoration: underline;
+  }
+
+  .error-msg {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 16px;
+    display: none;
+  }
+
+  /* ═══════════════════════════════════════
+     MAIN APP LAYOUT
+  ═══════════════════════════════════════ */
+  #app-screen { display: none; min-height: 100vh; }
+
+  .app-layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-width);
+    background: var(--forest);
+    color: var(--cream);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 100;
+  }
+
+  .sidebar-brand {
+    padding: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .sidebar-brand .logo-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .sidebar-brand .logo-mark {
+    width: 40px; height: 40px;
+    background: var(--gold);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--forest);
+  }
+
+  .sidebar-brand .brand-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  .sidebar-brand .brand-text span {
+    color: rgba(245,240,232,0.6);
+    font-size: 12px;
+    font-weight: 300;
+  }
+
+  .sidebar-user {
+    padding: 24px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .user-avatar {
+    width: 48px; height: 48px;
+    background: var(--gold);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--forest);
+    margin-bottom: 12px;
+  }
+
+  .user-info-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .user-info-row .name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--cream);
+  }
+
+  .user-info-row .role {
+    font-size: 12px;
+    color: rgba(245,240,232,0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .admin-badge {
+    display: inline-block;
+    background: rgba(201,168,76,0.2);
+    color: var(--gold);
+    font-size: 10px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 0;
+  }
+
+  .nav-section-label {
+    font-size: 11px;
+    color: rgba(245,240,232,0.5);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 16px 24px 8px;
+    font-weight: 600;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: rgba(245,240,232,0.8);
+  }
+
+  .nav-item:hover { background: rgba(255,255,255,0.07); color: var(--cream); }
+
+  .nav-item.active {
+    background: rgba(74,140,106,0.2);
+    color: var(--cream);
+  }
+
+  .nav-item .nav-icon {
+    width: 20px; height: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+  }
+
+  .nav-item.active .nav-icon { background: rgba(201,168,76,0.2); }
+
+  .nav-badge {
+    margin-left: auto;
+    background: var(--gold);
+    color: var(--forest);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .sidebar-footer {
+    padding: 24px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+
+  .logout-btn {
+    width: 100%;
+    padding: 12px;
+    background: rgba(168,50,50,0.1);
+    color: #f87171;
+    border: 1px solid rgba(168,50,50,0.3);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { background: rgba(168,50,50,0.2); color: #f87171; }
+
+  /* MAIN CONTENT */
+  .main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    background: var(--warm-white);
+    min-height: 100vh;
+  }
+
+  .page { display: none; animation: fadeUp 0.3s ease; }
+  .page.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PAGE HEADER */
+  .page-header {
+    padding: 32px 40px;
+    border-bottom: 1px solid var(--border);
+    background: white;
+  }
+
+  .page-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .page-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+
+  .stat-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: currentColor;
+    opacity: 0.05;
+    border-radius: 50%;
+    transform: translate(20px, -20px);
+  }
+
+  .stat-card.gold { --accent: var(--gold); }
+  .stat-card.green { --accent: var(--mint); }
+  .stat-card.blue { --accent: var(--info); }
+  .stat-card.orange { --accent: var(--warning); }
+
+  .stat-icon {
+    width: 48px; height: 48px;
+    background: var(--accent);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  .stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .stat-sub {
+    color: var(--text-muted);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* TABLES */
+  .table-wrap {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    background: #faf8f4;
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid #f5f0e8;
+  }
+
+  tbody tr:hover { background: #fafaf8; }
+
+  tbody td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--text);
+  }
+
+  .mono { font-family: 'DM Mono', monospace; font-size: 13px; }
+
+  /* STATUS BADGES */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: block; }
+
+  .badge-pending { background: #fef9ec; color: #c97d2a; }
+  .badge-active { background: #ecfdf5; color: #2d7a4f; }
+  .badge-overdue { background: #fef2f2; color: #a83232; }
+  .badge-rejected { background: #f5f5f5; color: #6b7280; }
+  .badge-paid { background: #eff6ff; color: #2a5a8c; }
+
+  /* BUTTONS */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    text-decoration: none;
+  }
+
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-forest { background: var(--forest); color: white; }
+  .btn-forest:hover { background: var(--sage); }
+  .btn-gold { background: var(--gold); color: var(--forest); }
+  .btn-gold:hover { background: var(--gold-light); }
+  .btn-success { background: #dcfce7; color: #16a34a; }
+  .btn-success:hover { background: #bbf7d0; }
+  .btn-danger { background: #fee2e2; color: #dc2626; }
+  .btn-danger:hover { background: #fecaca; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+  .btn-outline:hover { border-color: var(--mint); color: var(--mint); }
+
+  .btn-actions { display: flex; gap: 8px; align-items: center; }
+
+  /* GRID LAYOUTS */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s;
+  }
+
+  .modal-overlay.open { display: flex; opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: var(--card-bg);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    transform: scale(0.9);
+    transition: transform 0.3s;
+  }
+
+  .modal-overlay.open .modal { transform: scale(1); }
+
+  .modal-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    background: var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-muted);
+    transition: all 0.2s;
+  }
+
+  .modal-close:hover { background: var(--border); }
+
+  .modal-actions {
+    padding: 24px 32px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 12px;
+  }
+
+  .modal-actions .btn { flex: 1; justify-content: center; padding: 12px; }
+
+  /* LOAN CARD */
+  .loan-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.2s;
+  }
+
+  .loan-card:hover { border-color: var(--mint); box-shadow: 0 4px 16px rgba(74,140,106,0.1); }
+
+  .loan-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .loan-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .loan-purpose {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .loan-progress {
+    margin-bottom: 12px;
+  }
+
+  .progress-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--mint);
+    border-radius: 4px;
+    transition: width 0.3s;
+  }
+
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  .loan-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .loan-meta-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .loan-meta-item .meta-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .loan-meta-item .meta-value {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ALERTS */
+  .alert {
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .alert-warning { background: #fffbeb; border: 1px solid #fcd34d; color: #92400e; }
+  .alert-success { background: #f0fdf4; border: 1px solid #86efac; color: #166534; }
+  .alert-info { background: #eff6ff; border: 1px solid #93c5fd; color: #1e40af; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    color: var(--text);
+  }
+
+  /* SEARCH / FILTER BAR */
+  .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .search-box {
+    position: relative;
+    flex: 1;
+  }
+
+  .search-box input {
+    width: 100%;
+    padding: 12px 16px 12px 40px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--warm-white);
+  }
+
+  .search-box input:focus { border-color: var(--mint); }
+  .search-box .search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 16px;
+  }
+
+  .filter-select {
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: var(--warm-white);
+    min-width: 120px;
+  }
+
+  /* MEMBER PROFILE VIEW */
+  .profile-avatar {
+    width: 80px; height: 80px;
+    background: var(--gold);
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--forest);
+    margin-bottom: 16px;
+  }
+
+  .profile-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .profile-meta {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* CONTRIBUTION HISTORY */
+  .timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 15px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  .timeline-item {
+    position: relative;
+    padding: 16px 0;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -25px; top: 20px;
+    width: 10px; height: 10px;
+    background: var(--mint);
+    border-radius: 50%;
+    border: 2px solid white;
+  }
+
+  .timeline-date {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .timeline-desc {
+    font-size: 14px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .timeline-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--mint);
+    font-weight: 500;
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-state .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+  }
+
+  .empty-state h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  .empty-state p {
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  /* TOASTS */
+  .toast-container {
+    position: fixed;
+    top: 20px; right: 20px;
+    z-index: 10000;
+    pointer-events: none;
+  }
+
+  .toast {
+    background: var(--success);
+    color: white;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transform: translateX(400px);
+    opacity: 0;
+    transition: all 0.3s;
+    pointer-events: auto;
+  }
+
+  .toast.success { background: var(--success); }
+  .toast.danger { background: var(--danger); }
+  .toast.warning { background: var(--warning); }
+
+  @keyframes slideInRight {
+    from { transform: translateX(400px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+  /* DEBUG PANEL */
+  .debug-toggle {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    width: 40px; height: 40px;
+    background: var(--forest);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 5000;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: all 0.2s;
+  }
+  .debug-toggle:hover { transform: scale(1.1); background: var(--sage); }
+
+  .debug-panel {
+    position: fixed;
+    bottom: 70px; right: 20px;
+    width: 400px;
+    max-height: 500px;
+    background: var(--card-bg);
+    border: 2px solid var(--forest);
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    z-index: 5000;
+    display: none;
+    flex-direction: column;
+  }
+
+  .debug-panel.open { display: flex; }
+
+  .debug-header {
+    padding: 12px 16px;
+    background: var(--forest);
+    color: white;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .debug-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+
+  .debug-log {
+    margin-bottom: 8px;
+    padding: 6px 8px;
+    background: #f5f0e8;
+    border-left: 3px solid var(--mint);
+    border-radius: 2px;
+  }
+
+  .debug-log.error { border-left-color: var(--danger); background: #fee2e2; }
+  .debug-log.warn { border-left-color: var(--warning); background: #fef9ec; }
+  .debug-log.info { border-left-color: var(--info); background: #eff6ff; }
+
+  .debug-buttons {
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .debug-btn {
+    padding: 4px 8px;
+    background: var(--mint);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .debug-btn:hover { background: #2d5a3d; }
+  .debug-btn.danger { background: var(--danger); }
+
+  /* RESPONSIVE TWEAKS */
+  @media (max-width: 900px) {
+    .sidebar { transform: translateX(-100%); }
+    .main-content { margin-left: 0; }
+    .auth-left { padding: 40px 20px; }
+    .auth-right { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     AUTH SCREEN
+════════════════════════════════════ -->
+<div id="auth-screen">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="logo-mark">C</div>
+      <h1>CoopFund</h1>
+      <p>Village Savings & Loan Cooperative</p>
+    </div>
+    <div class="auth-tagline">
+      <h2>Building <em>Financial Futures</em> Together</h2>
+      <p>Join thousands of members in our community-driven savings cooperative. Secure your future with collective strength.</p>
+    </div>
+    <div class="auth-stats">
+      <div class="auth-stat">
+        <div class="num" id="stat-members">0</div>
+        <div class="lbl">Active Members</div>
+      </div>
+      <div class="auth-stat">
+        <div class="num" id="stat-funds">$0</div>
+        <div class="lbl">Total Funds</div>
+      </div>
+      <div class="auth-stat">
+        <div class="num" id="stat-loans">0</div>
+        <div class="lbl">Active Loans</div>
+      </div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-form-box">
+      <h3>Welcome Back</h3>
+      <p class="subtitle">Sign in to your account</p>
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-action="switchAuthTab" data-tab="login">Login</div>
+        <div class="auth-tab" data-action="switchAuthTab" data-tab="register">Register</div>
+      </div>
+      <div id="auth-error" class="error-msg"></div>
+      <form id="login-form">
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="login-email" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="login-password" required>
+        </div>
+        <button type="submit" class="btn-primary">Sign In</button>
+      </form>
+      <form id="register-form" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" id="reg-fname" required>
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" id="reg-lname" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="reg-email" required>
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="reg-phone" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="reg-password" required>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="reg-confirm" required>
+        </div>
+        <button type="submit" class="btn-primary">Create Account</button>
+      </form>
+      <div class="auth-switch">
+        <span id="auth-switch-text">Don't have an account? <a href="#" data-action="switchAuthTab" data-tab="register">Register</a></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════
+     MAIN APP
+════════════════════════════════════ -->
+<div id="app-screen">
+  <div class="app-layout">
+    <div class="sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-row">
+          <div class="logo-mark">C</div>
+          <div class="brand-text">
+            <h2>CoopFund</h2>
+            <span>Member Portal</span>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar"></div>
+        <div class="user-info-row">
+          <div>
+            <div class="name" id="sidebar-name"></div>
+            <div class="role" id="sidebar-role"></div>
+          </div>
+          <div id="admin-indicator"></div>
+        </div>
+      </div>
+      <div class="sidebar-nav" id="sidebar-nav"></div>
+      <div class="sidebar-footer">
+        <button class="logout-btn" data-action="doLogout">Logout</button>
+      </div>
+    </div>
+    <div class="main-content">
+      <div id="page-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal" id="modal-content"></div>
+</div>
+
+<!-- DEBUG PANEL -->
+<button class="debug-toggle" id="debug-toggle" title="Toggle Debug Panel">🐛</button>
+<div class="debug-panel" id="debug-panel">
+  <div class="debug-header">
+    Debug Console
+    <span style="cursor: pointer; font-size: 16px;" data-action="closeDebug">×</span>
+  </div>
+  <div class="debug-content" id="debug-logs"></div>
+  <div class="debug-buttons">
+    <button class="debug-btn" data-action="clearDebug">Clear Logs</button>
+    <button class="debug-btn" data-action="inspectDB">Inspect DB</button>
+    <button class="debug-btn" data-action="inspectUser">Inspect User</button>
+    <button class="debug-btn danger" data-action="resetData">Reset All Data</button>
+  </div>
+</div>
+
+<!-- TOASTS -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  DEBUG SYSTEM
+// ════════════════════════════════════════════════════════
+const DEBUG = {
+  logs: [],
+  addLog(msg, type = 'info') {
+    const time = new Date().toLocaleTimeString();
+    const entry = { time, msg, type };
+    this.logs.push(entry);
+    if (this.logs.length > 100) this.logs.shift();
+    this.render();
+    console.log(`[${time}] [${type.toUpperCase()}] ${msg}`);
+  },
+  render() {
+    const container = document.getElementById('debug-logs');
+    if (!container) return;
+    container.innerHTML = this.logs.map(l => 
+      `<div class="debug-log ${l.type}"><strong>${l.time}</strong> ${l.msg}</div>`
+    ).join('');
+    container.scrollTop = container.scrollHeight;
+  },
+  toggle() {
+    const panel = document.getElementById('debug-panel');
+    panel.classList.toggle('open');
+  },
+  close() {
+    const panel = document.getElementById('debug-panel');
+    panel.classList.remove('open');
+  },
+  clear() {
+    this.logs = [];
+    this.render();
+  },
+};
+
+// Hook into console
+const origLog = console.log;
+console.log = function(...args) {
+  origLog.apply(console, args);
+  DEBUG.addLog(args.join(' '), 'info');
+};
+
+window.addEventListener('error', e => {
+  DEBUG.addLog(`❌ ${e.message}`, 'error');
+});
+
+// ════════════════════════════════════════════════════════
+//  DATA STORE
+// ════════════════════════════════════════════════════════
+const DB = {
+  users: [
+    { id:1, fname:'John', lname:'Doe', email:'john@example.com', phone:'+254 712 345678', password:'pass123', role:'member', joined:'2023-01-15', active:true, shares:15000, social:3200, business:4800 },
+    { id:2, fname:'Jane', lname:'Smith', email:'jane@example.com', phone:'+254 723 456789', password:'pass123', role:'member', joined:'2023-02-20', active:true, shares:12000, social:2800, business:3600 },
+    { id:3, fname:'Mike', lname:'Johnson', email:'mike@example.com', phone:'+254 734 567890', password:'pass123', role:'member', joined:'2023-03-10', active:true, shares:18000, social:4000, business:5200 },
+    { id:4, fname:'Sarah', lname:'Williams', email:'sarah@example.com', phone:'+254 745 678901', password:'pass123', role:'member', joined:'2023-04-05', active:true, shares:22000, social:5000, business:6800 },
+    { id:5, fname:'Grace', lname:'Wangari', email:'grace@example.com', phone:'+254 745 678901', password:'pass123', role:'member', joined:'2023-05-20', active:false, shares:4200, social:900, business:2200 },
+    { id:6, fname:'Admin', lname:'User', email:'admin@example.com', phone:'+254 700 000000', password:'admin123', role:'admin', joined:'2023-01-01', active:true, shares:0, social:0, business:0 },
+  ],
+  loans: [
+    { id:1, memberId:1, amount:15000, purpose:'Farm Equipment', reason:'Need to buy a new tractor for farming.', term:12, monthlyPayment:1350, interestRate:8, status:'active', applied:'2023-06-01', approved:'2023-06-05', balance:8100, payments:[{date:'2023-07-01',amount:1350},{date:'2023-08-01',amount:1350}] },
+    { id:2, memberId:2, amount:8000, purpose:'Business Expansion', reason:'Expanding my small shop.', term:6, monthlyPayment:1400, interestRate:5, status:'active', applied:'2023-07-15', approved:'2023-07-20', balance:4200, payments:[{date:'2023-08-01',amount:1400}] },
+    { id:3, memberId:3, amount:25000, purpose:'Home Construction', reason:'Building an extension to my house.', term:24, monthlyPayment:1150, interestRate:7, status:'active', applied:'2023-05-10', approved:'2023-05-15', balance:20700, payments:[{date:'2023-06-01',amount:1150},{date:'2023-07-01',amount:1150},{date:'2023-08-01',amount:1150}] },
+    { id:4, memberId:4, amount:12000, purpose:'Education', reason:'School fees for my children.', term:12, monthlyPayment:1080, interestRate:6, status:'overdue', applied:'2023-03-01', approved:'2023-03-05', balance:5400, payments:[{date:'2023-04-01',amount:1080},{date:'2023-05-01',amount:1080}] },
+    { id:5, memberId:1, amount:5000, purpose:'Medical Emergency', reason:'Hospital bills.', term:6, monthlyPayment:875, interestRate:5, status:'paid', applied:'2023-09-01', approved:'2023-09-05', balance:0, payments:[{date:'2023-10-01',amount:875},{date:'2023-11-01',amount:875},{date:'2023-12-01',amount:875},{date:'2024-01-01',amount:875},{date:'2024-02-01',amount:875},{date:'2024-03-01',amount:875}] },
+    { id:6, memberId:5, amount:25000, purpose:'Agricultural Equipment', reason:'Purchasing a water pump and irrigation equipment for my farm.', term:12, monthlyPayment:2200, interestRate:6, status:'paid', applied:'2023-01-15', approved:'2023-01-20', balance:0, payments:[{date:'2023-02-20',amount:2200},{date:'2023-03-20',amount:2200}] },
+  ],
+  contributions: [
+    { id:1, memberId:1, type:'shares', amount:5000, date:'2023-01-15', note:'Initial share contribution' },
+    { id:2, memberId:1, type:'social', amount:800, date:'2023-02-01', note:'Monthly social fund' },
+    { id:3, memberId:1, type:'business', amount:1200, date:'2023-02-15', note:'Business fund contribution' },
+    { id:4, memberId:2, type:'shares', amount:4000, date:'2023-02-20', note:'Share purchase' },
+    { id:5, memberId:2, type:'social', amount:600, date:'2023-03-01', note:'Social contribution' },
+    { id:6, memberId:3, type:'shares', amount:6000, date:'2023-03-10', note:'Share contribution' },
+    { id:7, memberId:3, type:'business', amount:1500, date:'2023-04-01', note:'Business investment' },
+    { id:8, memberId:4, type:'shares', amount:8000, date:'2023-04-05', note:'Initial shares' },
+    { id:9, memberId:4, type:'social', amount:600, date:'2023-12-01', note:'Social fund' },
+  ],
+  nextLoanId: 7,
+  nextUserId: 6,
+  nextContribId: 10,
+};
+
+let currentUser = null;
+
+// ════════════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════════════
+const fmt = n => '$' + Number(n).toLocaleString('en-US', {minimumFractionDigits:0,maximumFractionDigits:0});
+const fmtDate = d => d ? new Date(d).toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}) : '—';
+const initials = u => (u.fname[0] + u.lname[0]).toUpperCase();
+const getMember = id => DB.users.find(u => u.id === id);
+const getUserLoans = id => DB.loans.filter(l => l.memberId === id);
+
+function getMemberContributions(id) {
+  const contribs = DB.contributions.filter(c => c.memberId === id);
+  const user = getMember(id);
+  return {
+    shares: contribs.filter(c => c.type === 'shares').reduce((s,c) => s + c.amount, 0) + (user ? user.shares : 0),
+    social: contribs.filter(c => c.type === 'social').reduce((s,c) => s + c.amount, 0) + (user ? user.social : 0),
+    business: contribs.filter(c => c.type === 'business').reduce((s,c) => s + c.amount, 0) + (user ? user.business : 0),
+  };
+}
+
+function toast(msg, type='success') {
+  const icons = { success:'✅', danger:'❌', warning:'⚠️', info:'ℹ️' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]||''}</span>${msg}`;
+  document.getElementById('toast-container').appendChild(el);
+  DEBUG.addLog(`${icons[type]} ${msg}`, type);
+  setTimeout(() => el.remove(), 3200);
+}
+
+function openModal(html) {
+  document.getElementById('modal-content').innerHTML = html;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal-overlay')) {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════════════════════
+function updateAuthStats() {
+  const members = DB.users.filter(u=>u.role==='member' && u.active).length;
+  const funds = DB.users.filter(u=>u.role==='member').reduce((s,u)=>{
+    const c = getMemberContributions(u.id);
+    return s + c.shares + c.social + c.business;
+  },0);
+  const loans = DB.loans.filter(l=>l.status==='active').length;
+  animateNum('stat-members', members);
+  document.getElementById('stat-funds').textContent = fmt(funds);
+  animateNum('stat-loans', loans);
+}
+
+function animateNum(id, target) {
+  let cur = 0;
+  const step = Math.ceil(target / 30);
+  const t = setInterval(() => {
+    cur += step;
+    if (cur >= target) {
+      cur = target;
+      clearInterval(t);
+    }
+    document.getElementById(id).textContent = cur;
+  }, 40);
+}
+
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i) => {
+    t.classList.toggle('active', (tab==='login' && i===0) || (tab==='register' && i===1));
+  });
+  document.getElementById('login-form').style.display = tab==='login' ? 'block' : 'none';
+  document.getElementById('register-form').style.display = tab==='register' ? 'block' : 'none';
+  document.getElementById('auth-error').style.display = 'none';
+}
+
+function showError(msg) {
+  const el = document.getElementById('auth-error');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pass = document.getElementById('login-password').value;
+  const user = DB.users.find(u => u.email === email && u.password === pass);
+  if (!user) { showError('Invalid email or password.'); DEBUG.addLog(`❌ Login failed: Invalid credentials for ${email}`, 'warn'); return; }
+  if (!user.active && user.role !== 'admin') { showError('Your account is inactive. Please contact admin.'); DEBUG.addLog(`❌ Login failed: Inactive account ${email}`, 'warn'); return; }
+  currentUser = user;
+  DEBUG.addLog(`✅ User logged in: ${user.fname} ${user.lname} (${user.role})`, 'info');
+  launchApp();
+}
+
+function doRegister() {
+  const fname = document.getElementById('reg-fname').value.trim();
+  const lname = document.getElementById('reg-lname').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const phone = document.getElementById('reg-phone').value.trim();
+  const pass = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  if (!fname || !lname || !email || !pass) { showError('All fields required.'); return; }
+  if (pass !== confirm) { showError('Passwords do not match.'); return; }
+  if (DB.users.find(u => u.email === email)) { showError('Email already registered.'); return; }
+  const newUser = { id: DB.nextUserId++, fname, lname, email, phone, password: pass, role:'member', joined: new Date().toISOString().split('T')[0], active:false, shares:0, social:0, business:0 };
+  DB.users.push(newUser);
+  toast('Registration successful! Pending admin approval.', 'info');
+  switchAuthTab('login');
+  document.getElementById('login-email').value = email;
+}
+
+function doLogout() {
+  currentUser = null;
+  document.getElementById('app-screen').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'flex';
+  updateAuthStats();
+}
+
+// ════════════════════════════════════════════════════════
+//  APP LAUNCH
+// ════════════════════════════════════════════════════════
+function launchApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
+  buildSidebar();
+  DEBUG.addLog(`🚀 App launched for ${currentUser.fname} ${currentUser.lname}`, 'info');
+  if (currentUser.role === 'admin') {
+    navigateTo('admin-dashboard');
+  } else {
+    navigateTo('member-dashboard');
+  }
+}
+
+function buildSidebar() {
+  document.getElementById('sidebar-avatar').textContent = initials(currentUser);
+  document.getElementById('sidebar-name').textContent = `${currentUser.fname} ${currentUser.lname}`;
+  document.getElementById('sidebar-role').textContent = currentUser.role === 'admin' ? 'Administrator' : 'Member';
+  if (currentUser.role === 'admin') {
+    document.getElementById('admin-indicator').innerHTML = '<div class="admin-badge">ADMIN</div>';
+  } else {
+    document.getElementById('admin-indicator').innerHTML = '';
+  }
+
+  const pendingLoans = DB.loans.filter(l=>l.status==='pending').length;
+
+  const memberNav = [
+    { id: 'member-dashboard', icon: '📊', label: 'Dashboard' },
+    { id: 'member-contributions', icon: '💰', label: 'Contributions' },
+    { id: 'member-loans', icon: '🏦', label: 'My Loans' },
+    { id: 'member-apply', icon: '📝', label: 'Apply for Loan' },
+    { id: 'member-profile', icon: '👤', label: 'Profile' },
+  ];
+
+  const adminNav = [
+    { id: 'admin-dashboard', icon: '📊', label: 'Dashboard' },
+    { id: 'admin-members', icon: '👥', label: 'Members', badge: pendingLoans ? pendingLoans : null },
+    { id: 'admin-contributions', icon: '💰', label: 'Contributions' },
+    { id: 'admin-loans', icon: '🏦', label: 'Loans' },
+    { id: 'admin-approvals', icon: '✅', label: 'Approvals', badge: pendingLoans ? pendingLoans : null },
+  ];
+
+  const nav = currentUser.role === 'admin' ? adminNav : memberNav;
+  let html = '';
+  nav.forEach(item => {
+    const badge = item.badge ? `<div class="nav-badge">${item.badge}</div>` : '';
+    html += `<div class="nav-item" id="nav-${item.id}" data-action="navigate" data-page="${item.id}"><div class="nav-icon">${item.icon}</div><span>${item.label}</span>${badge}</div>`;
+  });
+  document.getElementById('sidebar-nav').innerHTML = html;
+}
+
+function navigateTo(pageId) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  const navEl = document.getElementById(`nav-${pageId}`);
+  if (navEl) navEl.classList.add('active');
+  DEBUG.addLog(`📄 Navigating to: ${pageId}`, 'info');
+  renderPage(pageId);
+}
+
+// ════════════════════════════════════════════════════════
+//  PAGE RENDERING
+// ════════════════════════════════════════════════════════
+function renderPage(pageId) {
+  const pages = {
+    'member-dashboard': renderMemberDashboard,
+    'member-contributions': renderMemberContributions,
+    'member-loans': renderMemberLoans,
+    'member-apply': renderMemberApply,
+    'member-profile': renderMemberProfile,
+    'admin-dashboard': renderAdminDashboard,
+    'admin-members': renderAdminMembers,
+    'admin-contributions': renderAdminContributions,
+    'admin-loans': renderAdminLoans,
+    'admin-approvals': renderAdminApprovals,
+  };
+  if (pages[pageId]) {
+    document.getElementById('page-container').innerHTML = pages[pageId]();
+    DEBUG.addLog(`✅ Page rendered: ${pageId}`, 'info');
+  } else {
+    DEBUG.addLog(`❌ Page not found: ${pageId}`, 'error');
+  }
+}
+
+// ═══════════════════════════════════════
+//  MEMBER DASHBOARD
+// ═══════════════════════════════════════
+function renderMemberDashboard() {
+  const u = currentUser;
+  const c = getMemberContributions(u.id);
+  const total = c.shares + c.social + c.business;
+  const loans = getUserLoans(u.id);
+  const activeLoans = loans.filter(l=>l.status==='active');
+  const overdueLoans = loans.filter(l=>l.status==='overdue');
+  const pendingLoans = loans.filter(l=>l.status==='pending');
+  const totalOwed = [...activeLoans, ...overdueLoans].reduce((s,l)=>s+l.balance,0);
+
+  let overdueAlert = '';
+  if (overdueLoans.length) {
+    overdueAlert = `<div class="alert alert-warning">⚠️ You have ${overdueLoans.length} overdue loan${overdueLoans.length > 1 ? 's' : ''}. Please make payments immediately to avoid penalties.</div>`;
+  }
+
+  let recentLoansHtml = '';
+  const recentLoans = loans.filter(l=>l.status==='active'||l.status==='overdue').slice(0,2);
+  if (recentLoans.length) {
+    recentLoansHtml = recentLoans.map(l => loanCardHtml(l)).join('');
+  } else {
+    recentLoansHtml = `<div class="empty-state"><div class="empty-icon">🏦</div><h3>No Active Loans</h3><p>You don't have any active loans at the moment.</p></div>`;
+  }
+
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>Welcome back, ${u.fname}!</h1>
+      <p>Here's an overview of your cooperative account</p>
+    </div>
+
+    ${overdueAlert}
+
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">${fmt(total)}</div>
+        <div class="stat-label">Total Contributions</div>
+        <div class="stat-sub">Shares: ${fmt(c.shares)} | Social: ${fmt(c.social)} | Business: ${fmt(c.business)}</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">🏦</div>
+        <div class="stat-value">${fmt(totalOwed)}</div>
+        <div class="stat-label">Outstanding Loans</div>
+        <div class="stat-sub">${activeLoans.length} active, ${overdueLoans.length} overdue</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">✅</div>
+        <div class="stat-value">${pendingLoans.length}</div>
+        <div class="stat-label">Pending Applications</div>
+        <div class="stat-sub">Awaiting approval</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Recent Loans</div>
+        ${recentLoansHtml}
+      </div>
+
+      <div class="card">
+        <div class="card-title">Quick Actions</div>
+        <div class="btn-actions">
+          <button class="btn btn-gold" data-action="navigate" data-page="member-apply">Apply for Loan</button>
+          <button class="btn btn-outline" data-action="navigate" data-page="member-contributions">View Contributions</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════
+//  MEMBER CONTRIBUTIONS
+// ═══════════════════════════════════════
+function renderMemberContributions() {
+  const c = getMemberContributions(currentUser.id);
+  const total = c.shares + c.social + c.business;
+  const history = DB.contributions.filter(ct=>ct.memberId===currentUser.id).sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>My Contributions</h1>
+      <p>Track your savings and fund contributions</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-icon">📈</div>
+        <div class="stat-value">${fmt(c.shares)}</div>
+        <div class="stat-label">Share Capital</div>
+        <div class="stat-sub">Ownership stake in cooperative</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-value">${fmt(c.social)}</div>
+        <div class="stat-label">Social Fund</div>
+        <div class="stat-sub">Community welfare contributions</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">💼</div>
+        <div class="stat-value">${fmt(c.business)}</div>
+        <div class="stat-label">Business Fund</div>
+        <div class="stat-sub">Investment and business loans</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <h2>Contribution History</h2>
+      </div>
+
+      ${history.length ? `
+        <div class="timeline">
+          ${history.map(ct => `
+            <div class="timeline-item">
+              <div class="timeline-date">${fmtDate(ct.date)}</div>
+              <div class="timeline-desc">${ct.type.charAt(0).toUpperCase() + ct.type.slice(1)} Fund - ${ct.note || 'Contribution'}</div>
+              <div class="timeline-amount">+${fmt(ct.amount)}</div>
+            </div>
+          `).join('')}
+        </div>
+      ` : `
+        <div class="empty-state">
+          <div class="empty-icon">📅</div>
+          <h3>No Contributions Yet</h3>
+          <p>Your contribution history will appear here once you make deposits.</p>
+        </div>
+      `}
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════
+//  MEMBER LOANS
+// ═══════════════════════════════════════
+function renderMemberLoans() {
+  const loans = getUserLoans(currentUser.id);
+  const tabs = ['all','pending','active','overdue','paid','rejected'];
+  
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>My Loans</h1>
+      <p>Manage your loan applications and repayments</p>
+    </div>
+
+    <div class="filter-bar">
+      ${tabs.map(status => `<button class="btn btn-sm ${status === 'all' ? 'btn-forest' : 'btn-outline'}" data-action="filterLoans" data-status="${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</button>`).join('')}
+    </div>
+
+    <div id="loans-list" class="two-col">
+      ${loans.length ? loans.map(l => loanCardHtml(l, true)).join('') : `<div class="empty-state"><div class="empty-icon">🔍</div><h3>No loans found</h3><p>You haven't applied for any loans yet.</p></div>`}
+    </div>
+  </div>`;
+}
+
+function filterLoans(status, btn) {
+  document.querySelectorAll('#loans-list').forEach(()=>{});
+  const loans = getUserLoans(currentUser.id);
+  const filtered = status==='all' ? loans : loans.filter(l=>l.status===status);
+  document.getElementById('loans-list').innerHTML = filtered.length
+    ? filtered.map(l => loanCardHtml(l, true)).join('')
+    : `<div class="empty-state"><div class="empty-icon">🔍</div><h3>No ${status} loans</h3><p>No loans with this status found.</p></div>`;
+  document.querySelectorAll('[data-action="filterLoans"]').forEach(b => {
+    b.className = 'btn btn-sm btn-outline';
+    b.style.background = '';
+    b.style.color = '';
+    b.style.borderColor = '';
+  });
+  btn.className = 'btn btn-sm btn-forest';
+  btn.style.background = 'var(--forest)';
+  btn.style.color = 'white';
+  btn.style.borderColor = 'var(--forest)';
+}
+
+function loanCardHtml(loan, showActions=false) {
+  const paid = loan.amount - loan.balance;
+  const pct = Math.round(paid / loan.amount * 100);
+  const statusBadge = `<span class="badge badge-${loan.status}">${loan.status}</span>`;
+  
+  return `<div class="loan-card">
+    <div class="loan-card-header">
+      <div class="loan-amount">${fmt(loan.amount)}</div>
+      ${statusBadge}
+    </div>
+    <div class="loan-purpose">${loan.purpose}</div>
+    <div class="loan-progress">
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: ${pct}%"></div>
+      </div>
+      <div class="progress-labels">
+        <span>Paid: ${fmt(paid)}</span>
+        <span>Balance: ${fmt(loan.balance)}</span>
+      </div>
+    </div>
+    <div class="loan-meta">
+      <div class="loan-meta-item">
+        <div class="meta-label">Monthly Payment</div>
+        <div class="meta-value">${fmt(loan.monthlyPayment)}</div>
+      </div>
+      <div class="loan-meta-item">
+        <div class="meta-label">Next Due</div>
+        <div class="meta-value">${loan.payments.length ? fmtDate(new Date(loan.payments[loan.payments.length-1].date).setMonth(new Date(loan.payments[loan.payments.length-1].date).getMonth() + 1)) : '—'}</div>
+      </div>
+    </div>
+    ${showActions && loan.status === 'active' ? `<div class="btn-actions"><button class="btn btn-sm btn-success" data-action="makePayment" data-loan-id="${loan.id}">Make Payment</button></div>` : ''}
+  </div>`;
+}
+
+function makePayment(loanId) {
+  const loan = DB.loans.find(l => l.id === loanId);
+  openModal(`
+    <div class="modal-header">
+      <h3>Make Payment</h3>
+      <div class="modal-close" data-action="closeModal">×</div>
+    </div>
+    <form data-action="submitPayment" data-loan-id="${loanId}">
+      <div class="form-group">
+        <label>Payment Amount</label>
+        <input type="number" id="payment-amount" value="${loan.monthlyPayment}" min="1" max="${loan.balance}" required>
+      </div>
+      <div class="form-group">
+        <label>Payment Date</label>
+        <input type="date" id="payment-date" value="${new Date().toISOString().split('T')[0]}" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" data-action="closeModal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Submit Payment</button>
+      </div>
+    </form>
+  `);
+}
+
+function submitPayment(loanId) {
+  const amount = parseFloat(document.getElementById('payment-amount').value);
+  const date = document.getElementById('payment-date').value;
+  if (!amount || amount <= 0) { toast('Invalid payment amount.', 'warning'); return; }
+  const idx = DB.loans.findIndex(l => l.id === loanId);
+  DB.loans[idx].payments.push({ date, amount });
+  DB.loans[idx].balance = Math.max(0, DB.loans[idx].balance - amount);
+  if (DB.loans[idx].balance === 0) DB.loans[idx].status = 'paid';
+  DEBUG.addLog(`💳 Payment recorded: Loan #${loanId}, Amount: ${fmt(amount)}, New Balance: ${fmt(DB.loans[idx].balance)}`, 'info');
+  closeModal();
+  toast(`Payment of ${fmt(amount)} recorded!`, 'success');
+  renderPage('member-loans');
+}
+
+// ═══════════════════════════════════════
+//  MEMBER APPLY
+// ═══════════════════════════════════════
+function renderMemberApply() {
+  const c = getMemberContributions(currentUser.id);
+  const total = c.shares + c.social + c.business;
+  const maxLoan = total * 3;
+  const pendingCount = getUserLoans(currentUser.id).filter(l=>l.status==='pending').length;
+  const activeCount = getUserLoans(currentUser.id).filter(l=>l.status==='active'||l.status==='overdue').length;
+
+  let warning = '';
+  if (pendingCount > 0) warning = `<div class="alert alert-warning">⏳ You have a pending loan application. You cannot apply for another until it is processed.</div>`;
+  if (activeCount >= 2) warning = `<div class="alert alert-warning">⚠️ You already have ${activeCount} active loans. Maximum of 2 active loans allowed.</div>`;
+
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>Apply for a Loan</h1>
+      <p>Request financing for your needs</p>
+    </div>
+
+    ${warning}
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Loan Calculator</div>
+        <div class="form-group">
+          <label>Loan Amount ($)</label>
+          <input type="number" id="apply-amount" min="1000" max="${maxLoan}" step="500">
+        </div>
+        <div class="form-group">
+          <label>Repayment Term (Months)</label>
+          <select id="apply-term">
+            <option value="6">6 months</option>
+            <option value="12" selected>12 months</option>
+            <option value="18">18 months</option>
+            <option value="24">24 months</option>
+          </select>
+        </div>
+        <div id="apply-calc" style="display: none;">
+          <div class="alert alert-info">
+            <strong>Loan Details:</strong><br>
+            Interest Rate: <span id="calc-rate">7%</span><br>
+            Monthly Payment: <span id="calc-monthly">$0</span><br>
+            Interest Amount: <span id="calc-interest">$0</span><br>
+            Total Repayment: <span id="calc-total">$0</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Application Form</div>
+        <form data-action="submitLoanApplication">
+          <div class="form-group">
+            <label>Purpose</label>
+            <select id="apply-purpose" required>
+              <option value="">Select purpose</option>
+              <option value="Agricultural Equipment">Agricultural Equipment</option>
+              <option value="Business Expansion">Business Expansion</option>
+              <option value="Home Construction">Home Construction</option>
+              <option value="Education">Education</option>
+              <option value="Medical Emergency">Medical Emergency</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Detailed Reason</label>
+            <textarea id="apply-reason" rows="4" placeholder="Please explain why you need this loan and how it will benefit you..." required></textarea>
+          </div>
+          <div class="alert alert-info">
+            <strong>Eligibility:</strong> Maximum loan amount is 3x your total contributions (${fmt(maxLoan)}).<br>
+            You have ${2 - activeCount} active loan slots remaining.
+          </div>
+          <button type="submit" class="btn btn-primary" ${pendingCount > 0 || activeCount >= 2 ? 'disabled' : ''}>Submit Application</button>
+        </form>
+      </div>
+    </div>
+  </div>`;
+}
+
+function calcLoan() {
+  const amount = parseFloat(document.getElementById('apply-amount').value) || 0;
+  const term = parseInt(document.getElementById('apply-term').value) || 12;
+  if (!amount) { document.getElementById('apply-calc').style.display='none'; return; }
+  const rate = term <= 6 ? 5 : term <= 12 ? 7 : 8;
+  const totalInterest = amount * (rate/100) * (term/12);
+  const totalRepay = amount + totalInterest;
+  const monthly = totalRepay / term;
+  document.getElementById('apply-calc').style.display = 'block';
+  document.getElementById('calc-rate').textContent = rate + '%';
+  document.getElementById('calc-monthly').textContent = fmt(Math.round(monthly));
+  document.getElementById('calc-interest').textContent = fmt(Math.round(totalInterest));
+  document.getElementById('calc-total').textContent = fmt(Math.round(totalRepay));
+}
+
+function submitLoanApplication() {
+  const purpose = document.getElementById('apply-purpose').value.trim();
+  const amount = parseFloat(document.getElementById('apply-amount').value);
+  const term = parseInt(document.getElementById('apply-term').value);
+  const reason = document.getElementById('apply-reason').value.trim();
+  if (!purpose || !amount || !reason) { toast('Please fill in all fields.', 'warning'); return; }
+  if (amount <= 0) { toast('Invalid loan amount.', 'danger'); return; }
+  const c = getMemberContributions(currentUser.id);
+  const maxLoan = (c.shares + c.social + c.business) * 3;
+  if (amount > maxLoan) { toast(`Amount exceeds maximum loan of ${fmt(maxLoan)}.`, 'danger'); return; }
+  const rate = term <= 6 ? 5 : term <= 12 ? 7 : 8;
+  const totalInterest = amount * (rate/100) * (term/12);
+  const monthly = Math.round((amount + totalInterest) / term);
+  DB.loans.push({
+    id: DB.nextLoanId++,
+    memberId: currentUser.id,
+    amount,
+    purpose,
+    reason,
+    term,
+    monthlyPayment: monthly,
+    interestRate: rate,
+    status: 'pending',
+    applied: new Date().toISOString().split('T')[0],
+    approved: null,
+    balance: amount,
+    payments: [],
+  });
+  toast('Loan application submitted successfully!', 'success');
+  navigateTo('member-loans');
+}
+
+// ═══════════════════════════════════════
+//  MEMBER PROFILE
+// ═══════════════════════════════════════
+function renderMemberProfile() {
+  const u = currentUser;
+  const c = getMemberContributions(u.id);
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>My Profile</h1>
+      <p>Manage your account information</p>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="profile-avatar">${initials(u)}</div>
+        <div class="profile-name">${u.fname} ${u.lname}</div>
+        <div class="profile-meta">Member since ${fmtDate(u.joined)}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Account Information</div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" value="${u.email}" readonly>
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" value="${u.phone}" readonly>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <input type="text" value="${u.active ? 'Active' : 'Inactive'}" readonly>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Change Password</div>
+      <form data-action="changePassword">
+        <div class="form-group">
+          <label>Current Password</label>
+          <input type="password" id="cur-pass" required>
+        </div>
+        <div class="form-group">
+          <label>New Password</label>
+          <input type="password" id="new-pass" minlength="6" required>
+        </div>
+        <div class="form-group">
+          <label>Confirm New Password</label>
+          <input type="password" id="conf-pass" minlength="6" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Update Password</button>
+      </form>
+    </div>
+  </div>`;
+}
+
+function changePassword() {
+  const cur = document.getElementById('cur-pass').value;
+  const nw = document.getElementById('new-pass').value;
+  const conf = document.getElementById('conf-pass').value;
+  if (cur !== currentUser.password) { toast('Current password is incorrect.', 'danger'); return; }
+  if (!nw || nw.length < 6) { toast('New password must be at least 6 characters.', 'warning'); return; }
+  if (nw !== conf) { toast('Passwords do not match.', 'danger'); return; }
+  currentUser.password = nw;
+  const idx = DB.users.findIndex(u=>u.id===currentUser.id);
+  DB.users[idx].password = nw;
+  toast('Password updated successfully!', 'success');
+  ['cur-pass','new-pass','conf-pass'].forEach(id => document.getElementById(id).value='');
+}
+
+// ════════════════════════════════════════════════════════
+//  ADMIN PAGES
+// ════════════════════════════════════════════════════════
+
+function renderAdminDashboard() {
+  const members = DB.users.filter(u=>u.role==='member');
+  const activeMembers = members.filter(u=>u.active).length;
+  const allLoans = DB.loans;
+  const totalFunds = members.reduce((s,u)=>{const c=getMemberContributions(u.id);return s+c.shares+c.social+c.business;},0);
+  const totalLoanBook = allLoans.filter(l=>l.status==='active'||l.status==='overdue').reduce((s,l)=>s+l.amount,0);
+  const totalBalance = allLoans.filter(l=>l.status==='active'||l.status==='overdue').reduce((s,l)=>s+l.balance,0);
+  const pending = allLoans.filter(l=>l.status==='pending').length;
+  const overdue = allLoans.filter(l=>l.status==='overdue').length;
+
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>Admin Dashboard</h1>
+      <p>Overview of cooperative operations</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-icon">👥</div>
+        <div class="stat-value">${activeMembers}</div>
+        <div class="stat-label">Active Members</div>
+        <div class="stat-sub">Out of ${members.length} total</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">${fmt(totalFunds)}</div>
+        <div class="stat-label">Total Member Funds</div>
+        <div class="stat-sub">Combined contributions</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">🏦</div>
+        <div class="stat-value">${fmt(totalLoanBook)}</div>
+        <div class="stat-label">Loan Portfolio</div>
+        <div class="stat-sub">${fmt(totalBalance)} outstanding</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-value">${pending}</div>
+        <div class="stat-label">Pending Approvals</div>
+        <div class="stat-sub">${overdue} overdue loans</div>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Recent Activity</div>
+        <div class="timeline">
+          ${DB.contributions.slice(-5).reverse().map(ct => {
+            const m = getMember(ct.memberId);
+            return `<div class="timeline-item">
+              <div class="timeline-date">${fmtDate(ct.date)}</div>
+              <div class="timeline-desc">${m ? m.fname + ' ' + m.lname : 'Unknown'} - ${ct.type} contribution</div>
+              <div class="timeline-amount">+${fmt(ct.amount)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Quick Actions</div>
+        <div class="btn-actions">
+          <button class="btn btn-gold" data-action="navigate" data-page="admin-approvals">Review Applications</button>
+          <button class="btn btn-outline" data-action="navigate" data-page="admin-members">Manage Members</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderAdminMembers() {
+  const members = DB.users.filter(u=>u.role==='member');
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>Member Management</h1>
+      <p>Manage cooperative members and their accounts</p>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <input type="text" id="member-search" placeholder="Search members...">
+        <div class="search-icon">🔍</div>
+      </div>
+      <select id="member-filter">
+        <option value="all">All Members</option>
+        <option value="active">Active Only</option>
+        <option value="inactive">Inactive Only</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table id="members-table">
+        ${membersTableHtml(members)}
+      </table>
+    </div>
+  </div>`;
+}
+
+function membersTableHtml(members) {
+  return `<thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Joined</th>
+        <th>Status</th>
+        <th>Contributions</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${members.map(m => {
+        const c = getMemberContributions(m.id);
+        const total = c.shares + c.social + c.business;
+        return `<tr>
+          <td>${m.fname} ${m.lname}</td>
+          <td class="mono">${m.email}</td>
+          <td class="mono">${m.phone}</td>
+          <td>${fmtDate(m.joined)}</td>
+          <td><span class="badge badge-${m.active ? 'active' : 'rejected'}">${m.active ? 'Active' : 'Inactive'}</span></td>
+          <td class="mono">${fmt(total)}</td>
+          <td>
+            <div class="btn-actions">
+              <button class="btn btn-sm ${m.active ? 'btn-danger' : 'btn-success'}" data-action="toggleMemberStatus" data-member-id="${m.id}">${m.active ? 'Deactivate' : 'Activate'}</button>
+              <button class="btn btn-sm btn-outline" data-action="viewMemberDetail" data-member-id="${m.id}">View</button>
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+}
+
+function searchMembers(query) {
+  const members = DB.users.filter(u=>u.role==='member').filter(m=>
+    `${m.fname} ${m.lname} ${m.email}`.toLowerCase().includes(query.toLowerCase())
+  );
+  document.getElementById('members-table').innerHTML = membersTableHtml(members);
+}
+
+function filterMembers(val) {
+  const members = DB.users.filter(u=>u.role==='member').filter(m=>
+    val === 'all' || (val === 'active' && m.active) || (val === 'inactive' && !m.active)
+  );
+  document.getElementById('members-table').innerHTML = membersTableHtml(members);
+}
+
+function toggleMemberStatus(id) {
+  const idx = DB.users.findIndex(u=>u.id===id);
+  DB.users[idx].active = !DB.users[idx].active;
+  const m = DB.users[idx];
+  toast(`${m.fname} ${m.lname} has been ${m.active?'activated':'deactivated'}.`, m.active?'success':'warning');
+  renderPage('admin-members');
+}
+
+function viewMemberDetail(id) {
+  const m = getMember(id);
+  const c = getMemberContributions(id);
+  const loans = getUserLoans(id);
+  openModal(`
+    <div class="modal-header">
+      <h3>${m.fname} ${m.lname}</h3>
+      <div class="modal-close" data-action="closeModal">×</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <h4>Contact Information</h4>
+        <p><strong>Email:</strong> ${m.email}</p>
+        <p><strong>Phone:</strong> ${m.phone}</p>
+        <p><strong>Joined:</strong> ${fmtDate(m.joined)}</p>
+        <p><strong>Status:</strong> ${m.active ? 'Active' : 'Inactive'}</p>
+      </div>
+      <div>
+        <h4>Contributions</h4>
+        <p><strong>Shares:</strong> ${fmt(c.shares)}</p>
+        <p><strong>Social:</strong> ${fmt(c.social)}</p>
+        <p><strong>Business:</strong> ${fmt(c.business)}</p>
+        <p><strong>Total:</strong> ${fmt(c.shares + c.social + c.business)}</p>
+      </div>
+    </div>
+    <div>
+      <h4>Loans (${loans.length})</h4>
+      ${loans.length ? loans.map(l => `<div class="loan-card">
+        <div class="loan-card-header">
+          <div class="loan-amount">${fmt(l.amount)}</div>
+          <span class="badge badge-${l.status}">${l.status}</span>
+        </div>
+        <div class="loan-purpose">${l.purpose}</div>
+      </div>`).join('') : '<p>No loans</p>'}
+    </div>
+  `);
+}
+
+function renderAdminContributions() {
+  const allContribs = DB.contributions;
+  const members = DB.users.filter(u=>u.role==='member');
+  const totalAll = members.reduce((s,u)=>{const c=getMemberContributions(u.id);return s+c.shares+c.social+c.business;},0);
+  const totalShares = members.reduce((s,u)=>s+getMemberContributions(u.id).shares,0);
+  const totalSocial = members.reduce((s,u)=>s+getMemberContributions(u.id).social,0);
+  const totalBiz = members.reduce((s,u)=>s+getMemberContributions(u.id).business,0);
+
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>Contributions Management</h1>
+      <p>Track and manage member contributions</p>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card gold">
+        <div class="stat-icon">💰</div>
+        <div class="stat-value">${fmt(totalAll)}</div>
+        <div class="stat-label">Total Contributions</div>
+        <div class="stat-sub">All member funds</div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon">📈</div>
+        <div class="stat-value">${fmt(totalShares)}</div>
+        <div class="stat-label">Share Capital</div>
+        <div class="stat-sub">Ownership stakes</div>
+      </div>
+      <div class="stat-card blue">
+        <div class="stat-icon">🤝</div>
+        <div class="stat-value">${fmt(totalSocial)}</div>
+        <div class="stat-label">Social Fund</div>
+        <div class="stat-sub">Community welfare</div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon">💼</div>
+        <div class="stat-value">${fmt(totalBiz)}</div>
+        <div class="stat-label">Business Fund</div>
+        <div class="stat-sub">Investment capital</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-header">
+        <h2>All Contributions</h2>
+        <button class="btn btn-gold" data-action="openAddContribution">Add Contribution</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Member</th>
+              <th>Type</th>
+              <th>Amount</th>
+              <th>Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${allContribs.sort((a,b)=>new Date(b.date)-new Date(a.date)).map(ct => {
+              const m = getMember(ct.memberId);
+              return `<tr>
+                <td>${fmtDate(ct.date)}</td>
+                <td>${m ? m.fname + ' ' + m.lname : 'Unknown'}</td>
+                <td>${ct.type.charAt(0).toUpperCase() + ct.type.slice(1)}</td>
+                <td class="mono">${fmt(ct.amount)}</td>
+                <td>${ct.note || '—'}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openAddContribution() {
+  const memberOptions = DB.users.filter(u=>u.role==='member'&&u.active).map(m=>`<option value="${m.id}">${m.fname} ${m.lname}</option>`).join('');
+  openModal(`
+    <div class="modal-header">
+      <h3>Add Contribution</h3>
+      <div class="modal-close" data-action="closeModal">×</div>
+    </div>
+    <form data-action="saveContribution">
+      <div class="form-group">
+        <label>Member</label>
+        <select id="add-contrib-member" required>
+          <option value="">Select member</option>
+          ${memberOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Fund Type</label>
+        <select id="add-contrib-type" required>
+          <option value="shares">Share Capital</option>
+          <option value="social">Social Fund</option>
+          <option value="business">Business Fund</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Amount ($)</label>
+        <input type="number" id="add-contrib-amount" min="1" required>
+      </div>
+      <div class="form-group">
+        <label>Note (Optional)</label>
+        <input type="text" id="add-contrib-note" placeholder="Contribution description">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" data-action="closeModal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Add Contribution</button>
+      </div>
+    </form>
+  `);
+}
+
+function saveContribution() {
+  const memberId = parseInt(document.getElementById('add-contrib-member').value);
+  const type = document.getElementById('add-contrib-type').value;
+  const amount = parseFloat(document.getElementById('add-contrib-amount').value);
+  const note = document.getElementById('add-contrib-note').value.trim();
+  if (!amount || amount <= 0) { toast('Enter a valid amount.', 'warning'); return; }
+  DB.contributions.push({ id: DB.nextContribId++, memberId, type, amount, date: new Date().toISOString().split('T')[0], note: note||'Manual contribution' });
+  const idx = DB.users.findIndex(u=>u.id===memberId);
+  if (type==='shares') DB.users[idx].shares = (DB.users[idx].shares||0) + amount;
+  else if (type==='social') DB.users[idx].social = (DB.users[idx].social||0) + amount;
+  else if (type==='business') DB.users[idx].business = (DB.users[idx].business||0) + amount;
+  closeModal();
+  toast('Contribution recorded successfully!', 'success');
+  renderPage('admin-contributions');
+}
+
+function renderAdminLoans() {
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>Loan Management</h1>
+      <p>Monitor and manage all loan applications</p>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <input type="text" id="admin-loan-search" placeholder="Search loans...">
+        <div class="search-icon">🔍</div>
+      </div>
+      <select id="admin-loan-filter">
+        <option value="all">All Loans</option>
+        <option value="pending">Pending</option>
+        <option value="active">Active</option>
+        <option value="overdue">Overdue</option>
+        <option value="paid">Paid</option>
+        <option value="rejected">Rejected</option>
+      </select>
+    </div>
+
+    <div class="table-wrap">
+      <table id="admin-loans-table">
+        ${adminLoansTableHtml(DB.loans)}
+      </table>
+    </div>
+  </div>`;
+}
+
+function adminLoansTableHtml(loans) {
+  if (!loans.length) return `<div class="empty-state"><div class="empty-icon">📋</div><h3>No loans found</h3></div>`;
+  return `<thead>
+      <tr>
+        <th>Member</th>
+        <th>Amount</th>
+        <th>Purpose</th>
+        <th>Status</th>
+        <th>Applied</th>
+        <th>Balance</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${loans.sort((a,b)=>new Date(b.applied)-new Date(a.applied)).map(l => {
+        const m = getMember(l.memberId);
+        return `<tr>
+          <td>${m ? m.fname + ' ' + m.lname : 'Unknown'}</td>
+          <td class="mono">${fmt(l.amount)}</td>
+          <td>${l.purpose}</td>
+          <td><span class="badge badge-${l.status}">${l.status}</span></td>
+          <td>${fmtDate(l.applied)}</td>
+          <td class="mono">${fmt(l.balance)}</td>
+          <td>
+            <div class="btn-actions">
+              <button class="btn btn-sm btn-outline" data-action="viewLoanDetail" data-loan-id="${l.id}">View</button>
+              ${l.status === 'pending' ? `<button class="btn btn-sm btn-success" data-action="approveLoan" data-loan-id="${l.id}">Approve</button>` : ''}
+              ${l.status === 'pending' ? `<button class="btn btn-sm btn-danger" data-action="promptReject" data-loan-id="${l.id}">Reject</button>` : ''}
+              ${l.status === 'active' ? `<button class="btn btn-sm btn-gold" data-action="recordPayment" data-loan-id="${l.id}">Payment</button>` : ''}
+            </div>
+          </td>
+        </tr>`;
+      }).join('')}
+    </tbody>
+  </table>`;
+}
+
+function searchAdminLoans(q) {
+  const status = document.getElementById('admin-loan-filter').value;
+  let loans = DB.loans;
+  if (status !== 'all') loans = loans.filter(l=>l.status===status);
+  if (q) loans = loans.filter(l=>{
+    const m = getMember(l.memberId);
+    return `${m?m.fname+' '+m.lname:''} ${l.purpose}`.toLowerCase().includes(q.toLowerCase());
+  });
+  document.getElementById('admin-loans-table').innerHTML = adminLoansTableHtml(loans);
+}
+
+function filterAdminLoans(status) {
+  const loans = status==='all' ? DB.loans : DB.loans.filter(l=>l.status===status);
+  document.getElementById('admin-loans-table').innerHTML = adminLoansTableHtml(loans);
+}
+
+function renderAdminApprovals() {
+  const pending = DB.loans.filter(l=>l.status==='pending');
+  return `
+  <div class="page active">
+    <div class="page-header">
+      <h1>Loan Approvals</h1>
+      <p>Review and approve pending loan applications</p>
+    </div>
+
+    ${pending.length ? `
+      <div class="two-col">
+        ${pending.map(l => {
+          const m = getMember(l.memberId);
+          const c = getMemberContributions(l.memberId);
+          const maxLoan = (c.shares + c.social + c.business) * 3;
+          return `<div class="loan-card">
+            <div class="loan-card-header">
+              <div class="loan-amount">${fmt(l.amount)}</div>
+              <span class="badge badge-pending">Pending</span>
+            </div>
+            <div class="loan-purpose">${l.purpose}</div>
+            <div style="margin: 16px 0;">
+              <strong>Applicant:</strong> ${m ? m.fname + ' ' + m.lname : 'Unknown'}<br>
+              <strong>Reason:</strong> ${l.reason}<br>
+              <strong>Term:</strong> ${l.term} months<br>
+              <strong>Monthly Payment:</strong> ${fmt(l.monthlyPayment)}<br>
+              <strong>Max Eligible:</strong> ${fmt(maxLoan)}
+            </div>
+            <div class="btn-actions">
+              <button class="btn btn-success" data-action="approveLoan" data-loan-id="${l.id}">Approve</button>
+              <button class="btn btn-danger" data-action="promptReject" data-loan-id="${l.id}">Reject</button>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    ` : `
+      <div class="empty-state">
+        <div class="empty-icon">✅</div>
+        <h3>No Pending Applications</h3>
+        <p>All loan applications have been processed.</p>
+      </div>
+    `}
+  </div>`;
+}
+
+function approveLoan(id) {
+  const idx = DB.loans.findIndex(l=>l.id===id);
+  DB.loans[idx].status = 'active';
+  DB.loans[idx].approved = new Date().toISOString().split('T')[0];
+  DEBUG.addLog(`✅ Loan #${id} approved by admin`, 'info');
+  toast('Loan approved successfully!', 'success');
+  buildSidebar();
+  renderPage('admin-approvals');
+}
+
+function promptReject(id) {
+  openModal(`
+    <div class="modal-header">
+      <h3>Reject Loan Application</h3>
+      <div class="modal-close" data-action="closeModal">×</div>
+    </div>
+    <form data-action="rejectLoan" data-loan-id="${id}">
+      <div class="form-group">
+        <label>Rejection Reason</label>
+        <textarea id="reject-note" rows="4" placeholder="Please provide a reason for rejection..." required></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" data-action="closeModal">Cancel</button>
+        <button type="submit" class="btn btn-danger">Reject Application</button>
+      </div>
+    </form>
+  `);
+}
+
+function rejectLoan(id) {
+  const note = document.getElementById('reject-note').value.trim();
+  if (!note) { toast('Please provide a rejection reason.', 'warning'); return; }
+  const idx = DB.loans.findIndex(l=>l.id===id);
+  DB.loans[idx].status = 'rejected';
+  DB.loans[idx].rejectionNote = note;
+  closeModal();
+  toast('Loan application rejected.', 'danger');
+  buildSidebar();
+  renderPage('admin-approvals');
+}
+
+function viewLoanDetail(id) {
+  const l = DB.loans.find(x=>x.id===id);
+  const m = getMember(l.memberId);
+  const paid = l.amount - l.balance;
+  const pct = Math.round(paid/l.amount*100);
+  openModal(`
+    <div class="modal-header">
+      <h3>Loan Details</h3>
+      <div class="modal-close" data-action="closeModal">×</div>
+    </div>
+    <div class="two-col">
+      <div>
+        <h4>Loan Information</h4>
+        <p><strong>Amount:</strong> ${fmt(l.amount)}</p>
+        <p><strong>Purpose:</strong> ${l.purpose}</p>
+        <p><strong>Reason:</strong> ${l.reason}</p>
+        <p><strong>Term:</strong> ${l.term} months</p>
+        <p><strong>Monthly Payment:</strong> ${fmt(l.monthlyPayment)}</p>
+        <p><strong>Interest Rate:</strong> ${l.interestRate}%</p>
+        <p><strong>Status:</strong> <span class="badge badge-${l.status}">${l.status}</span></p>
+      </div>
+      <div>
+        <h4>Progress</h4>
+        <div class="loan-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${pct}%"></div>
+          </div>
+          <div class="progress-labels">
+            <span>Paid: ${fmt(paid)}</span>
+            <span>Balance: ${fmt(l.balance)}</span>
+          </div>
+        </div>
+        <h4 style="margin-top: 16px;">Member</h4>
+        <p><strong>Name:</strong> ${m ? m.fname + ' ' + m.lname : 'Unknown'}</p>
+        <p><strong>Email:</strong> ${m ? m.email : 'Unknown'}</p>
+      </div>
+    </div>
+    ${l.payments.length ? `
+      <div>
+        <h4>Payment History</h4>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${l.payments.map(p => `<tr><td>${fmtDate(p.date)}</td><td class="mono">${fmt(p.amount)}</td></tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ` : ''}
+  `);
+}
+
+function recordPayment(id) {
+  const l = DB.loans.find(x=>x.id===id);
+  const m = getMember(l.memberId);
+  openModal(`
+    <div class="modal-header">
+      <h3>Record Payment</h3>
+      <div class="modal-close" data-action="closeModal">×</div>
+    </div>
+    <form data-action="savePayment" data-loan-id="${id}">
+      <div class="form-group">
+        <label>Member</label>
+        <input type="text" value="${m ? m.fname + ' ' + m.lname : 'Unknown'}" readonly>
+      </div>
+      <div class="form-group">
+        <label>Loan Amount</label>
+        <input type="text" value="${fmt(l.amount)}" readonly>
+      </div>
+      <div class="form-group">
+        <label>Outstanding Balance</label>
+        <input type="text" value="${fmt(l.balance)}" readonly>
+      </div>
+      <div class="form-group">
+        <label>Payment Amount</label>
+        <input type="number" id="pay-amount" min="1" max="${l.balance}" required>
+      </div>
+      <div class="form-group">
+        <label>Payment Date</label>
+        <input type="date" id="pay-date" value="${new Date().toISOString().split('T')[0]}" required>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" data-action="closeModal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Record Payment</button>
+      </div>
+    </form>
+  `);
+}
+
+function savePayment(id) {
+  const amount = parseFloat(document.getElementById('pay-amount').value);
+  const date = document.getElementById('pay-date').value;
+  if (!amount || amount <= 0) { toast('Invalid payment amount.', 'warning'); return; }
+  const idx = DB.loans.findIndex(l=>l.id===id);
+  DB.loans[idx].payments.push({ date, amount });
+  DB.loans[idx].balance = Math.max(0, DB.loans[idx].balance - amount);
+  if (DB.loans[idx].balance === 0) DB.loans[idx].status = 'paid';
+  closeModal();
+  toast(`Payment of ${fmt(amount)} recorded!`, 'success');
+  renderPage('admin-loans');
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+updateAuthStats();
+
+// attach event handlers for CSP-safe interactions
+function initEventHandlers() {
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) loginForm.addEventListener('submit', e => { e.preventDefault(); doLogin(); });
+  const regForm = document.getElementById('register-form');
+  if (regForm) regForm.addEventListener('submit', e => { e.preventDefault(); doRegister(); });
+
+  document.body.addEventListener('click', e => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
+    switch(action) {
+      case 'switchAuthTab': switchAuthTab(el.dataset.tab); break;
+      case 'doLogout': doLogout(); break;
+      case 'navigate': navigateTo(el.dataset.page); break;
+      case 'filterLoans': filterLoans(el.dataset.status, el); break;
+      case 'makePayment': makePayment(parseInt(el.dataset.loanId)); break;
+      case 'toggleMemberStatus': toggleMemberStatus(parseInt(el.dataset.memberId)); break;
+      case 'viewMemberDetail': viewMemberDetail(parseInt(el.dataset.memberId)); break;
+      case 'openAddContribution': openAddContribution(); break;
+      case 'closeModal': closeModal(); break;
+      case 'viewLoanDetail': viewLoanDetail(parseInt(el.dataset.loanId)); break;
+      case 'approveLoan': approveLoan(parseInt(el.dataset.loanId)); break;
+      case 'promptReject': promptReject(parseInt(el.dataset.loanId)); break;
+      case 'recordPayment': recordPayment(parseInt(el.dataset.loanId)); break;
+    }
+  });
+
+  // Debug panel handlers
+  document.getElementById('debug-toggle').addEventListener('click', () => DEBUG.toggle());
+
+  document.body.addEventListener('click', e => {
+    const el = e.target.closest('[data-action]');
+    if (!el) return;
+    const action = el.dataset.action;
+    switch(action) {
+      case 'closeDebug': DEBUG.close(); break;
+      case 'clearDebug': DEBUG.clear(); break;
+      case 'inspectDB': 
+        DEBUG.addLog(JSON.stringify({users: DB.users.length, loans: DB.loans.length, contributions: DB.contributions.length}, null, 2), 'info');
+        break;
+      case 'inspectUser':
+        DEBUG.addLog(currentUser ? JSON.stringify(currentUser, null, 2) : 'No user logged in', 'info');
+        break;
+      case 'resetData':
+        if (confirm('Reset all data to defaults? This cannot be undone.')) {
+          location.reload();
+          DEBUG.addLog('Data reset and page reloaded', 'warn');
+        }
+        break;
+    }
+  });
+
+  document.body.addEventListener('submit', e => {
+    const form = e.target;
+    const action = form.dataset.action;
+    if (!action) return;
+    e.preventDefault();
+    switch(action) {
+      case 'submitPayment': submitPayment(parseInt(form.dataset.loanId)); break;
+      case 'submitLoanApplication': submitLoanApplication(); break;
+      case 'changePassword': changePassword(); break;
+      case 'saveContribution': saveContribution(); break;
+      case 'rejectLoan': rejectLoan(parseInt(form.dataset.loanId)); break;
+      case 'savePayment': savePayment(parseInt(form.dataset.loanId)); break;
+    }
+  });
+
+  // delegate input events for fields that may be rendered later
+  document.body.addEventListener('input', e => {
+    const el = e.target;
+    switch(el.id) {
+      case 'member-search':
+        searchMembers(el.value);
+        break;
+      case 'admin-loan-search':
+        searchAdminLoans(el.value);
+        break;
+      case 'apply-amount':
+        calcLoan();
+        break;
+    }
+  });
+
+  document.body.addEventListener('change', e => {
+    const el = e.target;
+    switch(el.id) {
+      case 'member-filter':
+        filterMembers(el.value);
+        break;
+      case 'admin-loan-filter':
+        filterAdminLoans(el.value);
+        break;
+      case 'apply-term':
+        calcLoan();
+        break;
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initEventHandlers);
+
+// Initialize
+DEBUG.addLog('🎯 CoopFund application started', 'info');
+updateAuthStats();
+</script>
+</body>
+</html>
